@@ -1,15 +1,18 @@
 require_relative "empty_selection"
+require_relative "shelf"
 
 class VendingMachine
-  OutOfStockError = Class.new(StandardError)
-
-  attr_reader :products, :coins
+  attr_reader :coins
 
   def initialize(products: [], coins: [])
-    @products = products
+    @shelf = Shelf.new(products)
     @coins = coins
     reset_coins_inserted
     reset_selection
+  end
+
+  def products
+    @shelf.to_a
   end
 
   def reload_coins(coins)
@@ -17,7 +20,7 @@ class VendingMachine
   end
 
   def reload_products(products)
-    @products.concat(products)
+    @shelf.load(products)
   end
 
   def insert(coin)
@@ -30,7 +33,7 @@ class VendingMachine
   end
 
   def select(name)
-    @selection = find_product(name)
+    @selection = @shelf.find(name)
   end
 
   def selection
@@ -58,15 +61,5 @@ class VendingMachine
   def take_payment
     @coins.concat(@coins_inserted)
     reset_coins_inserted
-  end
-
-  def find_product(name)
-    index = @products.index { |product| product.name == name }
-
-    if index.nil?
-      raise OutOfStockError.new("#{name} not in stock")
-    else
-      @products.delete_at(index)
-    end
   end
 end

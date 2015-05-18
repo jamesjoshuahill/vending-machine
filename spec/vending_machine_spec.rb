@@ -107,7 +107,7 @@ RSpec.describe VendingMachine do
     vending_machine = described_class.new
 
     expect { vending_machine.select("Cola") }.
-      to raise_error(VendingMachine::OutOfStockError)
+      to raise_error(Shelf::OutOfStockError)
   end
 
   it "vends nothing by default" do
