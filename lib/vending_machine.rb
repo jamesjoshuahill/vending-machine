@@ -4,8 +4,8 @@ require_relative "shelf"
 class VendingMachine
   attr_reader :coins
 
-  def initialize(products: [], coins: [])
-    @shelf = Shelf.new(products)
+  def initialize(shelf: Shelf.new, coins: [])
+    @shelf = shelf
     @coins = coins
     reset_coins_inserted
     reset_selection
