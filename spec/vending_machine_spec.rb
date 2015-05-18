@@ -61,4 +61,126 @@ RSpec.describe VendingMachine do
     expect(vending_machine.products).
       to contain_exactly(initial_product, top_up_product)
   end
+
+  it "has no coins inserted by default" do
+    vending_machine = described_class.new
+
+    expect(vending_machine.amount_inserted).to eq(0)
+  end
+
+  it "accepts coins as payment" do
+    tuppence = instance_double("Coin", value: 2)
+    vending_machine = described_class.new
+
+    vending_machine.insert(tuppence)
+
+    expect(vending_machine.amount_inserted).to eq(2)
+  end
+
+  it "knows the amount inserted so far" do
+    tuppence = instance_double("Coin", value: 2)
+    ten_pence = instance_double("Coin", value: 10)
+    vending_machine = described_class.new
+
+    vending_machine.insert(tuppence)
+    vending_machine.insert(ten_pence)
+
+    expect(vending_machine.amount_inserted).to eq(12)
+  end
+
+  it "has no product selected by default" do
+    vending_machine = described_class.new
+
+    expect(vending_machine.selection).to eq("No product selected")
+  end
+
+  it "allows a product to be selected" do
+    cola = instance_double("Product", name: "Cola", price: 2)
+    vending_machine = described_class.new(products: [cola])
+
+    vending_machine.select("Cola")
+
+    expect(vending_machine.selection).to eq("Cola")
+  end
+
+  it "raises an error if the product is not in stock" do
+    vending_machine = described_class.new
+
+    expect { vending_machine.select("Cola") }.
+      to raise_error(VendingMachine::OutOfStockError)
+  end
+
+  it "vends nothing by default" do
+    vending_machine = described_class.new
+
+    expect(vending_machine.collect_product).to be_nil
+  end
+
+  it "vends nothing if not enough coins have been inserted" do
+    cola = instance_double("Product", name: "Cola", price: 2)
+    vending_machine = described_class.new(products: [cola])
+
+    vending_machine.select("Cola")
+
+    expect(vending_machine.collect_product).to be_nil
+  end
+
+  it "vends the selected product if the right amount has been inserted" do
+    cola = instance_double("Product", name: "Cola", price: 2)
+    vending_machine = described_class.new(products: [cola])
+    tuppence = instance_double("Coin", value: 2)
+
+    vending_machine.insert(tuppence)
+    vending_machine.select("Cola")
+
+    expect(vending_machine.collect_product).to be(cola)
+  end
+
+  it "resets the selection when the product is collected" do
+    cola = instance_double("Product", name: "Cola", price: 2)
+    vending_machine = described_class.new(products: [cola])
+    tuppence = instance_double("Coin", value: 2)
+
+    vending_machine.insert(tuppence)
+    vending_machine.select("Cola")
+    vending_machine.collect_product
+
+    expect(vending_machine.selection).to eq("No product selected")
+  end
+
+  it "resets the amount inserted when the product is collected" do
+    cola = instance_double("Product", name: "Cola", price: 2)
+    vending_machine = described_class.new(products: [cola])
+    tuppence = instance_double("Coin", value: 2)
+
+    vending_machine.insert(tuppence)
+    vending_machine.select("Cola")
+    vending_machine.collect_product
+
+    expect(vending_machine.amount_inserted).to eq(0)
+  end
+
+  it "takes the inserted coins as payment when the product is collected" do
+    cola = instance_double("Product", name: "Cola", price: 2)
+    vending_machine = described_class.new(products: [cola])
+    tuppence = instance_double("Coin", value: 2)
+
+    vending_machine.insert(tuppence)
+    vending_machine.select("Cola")
+    vending_machine.collect_product
+
+    expect(vending_machine.coins).to include(tuppence)
+  end
+
+  it "removes the product from the machine when it is collected" do
+    cola = instance_double("Product", name: "Cola", price: 2)
+    vending_machine = described_class.new(products: [cola])
+    tuppence = instance_double("Coin", value: 2)
+
+    vending_machine.insert(tuppence)
+    vending_machine.select("Cola")
+    vending_machine.collect_product
+
+    expect(vending_machine.products).not_to include(cola)
+  end
 end
