@@ -6,8 +6,11 @@ class VendingMachine
     @coins = coins
   end
 
-  def reload(coins: [], products: [])
+  def reload_coins(coins)
     @coins.concat(coins)
+  end
+
+  def reload_products(products)
     @products.concat(products)
   end
 end

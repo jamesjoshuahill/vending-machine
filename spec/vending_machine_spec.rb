@@ -27,7 +27,7 @@ RSpec.describe VendingMachine do
     coins = [instance_double("Coin")]
     vending_machine = described_class.new
 
-    vending_machine.reload(coins: coins)
+    vending_machine.reload_coins(coins)
 
     expect(vending_machine.coins).to match_array(coins)
   end
@@ -37,7 +37,7 @@ RSpec.describe VendingMachine do
     vending_machine = described_class.new(coins: [initial_coin])
     top_up_coin = instance_double("Coin")
 
-    vending_machine.reload(coins: [top_up_coin])
+    vending_machine.reload_coins([top_up_coin])
 
     expect(vending_machine.coins).to contain_exactly(initial_coin, top_up_coin)
   end
@@ -46,7 +46,7 @@ RSpec.describe VendingMachine do
     products = [instance_double("Product")]
     vending_machine = described_class.new
 
-    vending_machine.reload(products: products)
+    vending_machine.reload_products(products)
 
     expect(vending_machine.products).to match_array(products)
   end
@@ -56,7 +56,7 @@ RSpec.describe VendingMachine do
     vending_machine = described_class.new(products: [initial_product])
     top_up_product = instance_double("Product")
 
-    vending_machine.reload(products: [top_up_product])
+    vending_machine.reload_products([top_up_product])
 
     expect(vending_machine.products).
       to contain_exactly(initial_product, top_up_product)
