@@ -7,7 +7,7 @@ class Shelf
     @products = products
   end
 
-  def_delegators :@products, :empty?, :to_a
+  def_delegators :@products, :empty?
 
   def load(products)
     @products.concat(products)
