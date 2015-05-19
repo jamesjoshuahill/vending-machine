@@ -1,12 +1,11 @@
 require_relative "empty_selection"
 require_relative "shelf"
+require_relative "coin_hopper"
 
 class VendingMachine
-  attr_reader :coins
-
   def initialize(shelf: Shelf.new, coins: [])
     @shelf = shelf
-    @coins = coins
+    @coins = CoinHopper.new(coins)
     reset_coins_inserted
     reset_selection
   end
@@ -15,8 +14,12 @@ class VendingMachine
     @shelf.to_a
   end
 
+  def coins
+    @coins.to_a
+  end
+
   def reload_coins(coins)
-    @coins.concat(coins)
+    @coins.load(coins)
   end
 
   def reload_products(products)
@@ -59,7 +62,7 @@ class VendingMachine
   end
 
   def take_payment
-    @coins.concat(@coins_inserted)
+    @coins.load(@coins_inserted)
     reset_coins_inserted
   end
 end
