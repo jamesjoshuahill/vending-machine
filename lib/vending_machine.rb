@@ -42,7 +42,7 @@ class VendingMachine
     @selection.name
   end
 
-  def collect_product
+  def vend
     return nil unless amount_inserted == @selection.price
     product = @selection
     reset_selection

@@ -110,7 +110,7 @@ RSpec.describe VendingMachine do
   it "vends nothing by default" do
     vending_machine = described_class.new
 
-    expect(vending_machine.collect_product).to be_nil
+    expect(vending_machine.vend).to be_nil
   end
 
   it "vends nothing if not enough coins have been inserted" do
@@ -118,7 +118,7 @@ RSpec.describe VendingMachine do
 
     vending_machine.select("Cola")
 
-    expect(vending_machine.collect_product).to be_nil
+    expect(vending_machine.vend).to be_nil
   end
 
   it "vends the selected product if the right amount has been inserted" do
@@ -127,46 +127,32 @@ RSpec.describe VendingMachine do
     vending_machine.insert(tuppence)
     vending_machine.select("Cola")
 
-    expect(vending_machine.collect_product).to be(cola)
+    expect(vending_machine.vend).to be(cola)
   end
 
-  it "resets the selection when the product is collected" do
-    vending_machine = described_class.new(shelf: shelf_with_a_cola)
+  context "when the product is vended" do
+    let(:vending_machine) { described_class.new(shelf: shelf_with_a_cola) }
 
-    vending_machine.insert(tuppence)
-    vending_machine.select("Cola")
-    vending_machine.collect_product
+    before(:each) do
+      vending_machine.insert(tuppence)
+      vending_machine.select("Cola")
+      vending_machine.vend
+    end
 
-    expect(vending_machine.selection).to eq("No product selected")
-  end
+    it "resets the selection" do
+      expect(vending_machine.selection).to eq("No product selected")
+    end
 
-  it "resets the amount inserted when the product is collected" do
-    vending_machine = described_class.new(shelf: shelf_with_a_cola)
+    it "resets the amount inserted" do
+      expect(vending_machine.amount_inserted).to eq(0)
+    end
 
-    vending_machine.insert(tuppence)
-    vending_machine.select("Cola")
-    vending_machine.collect_product
+    it "takes the inserted coins as payment" do
+      expect(vending_machine.amount_collected).to eq(2)
+    end
 
-    expect(vending_machine.amount_inserted).to eq(0)
-  end
-
-  it "takes the inserted coins as payment when the product is collected" do
-    vending_machine = described_class.new(shelf: shelf_with_a_cola)
-
-    vending_machine.insert(tuppence)
-    vending_machine.select("Cola")
-    vending_machine.collect_product
-
-    expect(vending_machine.amount_collected).to eq(2)
-  end
-
-  it "removes the product from the machine when it is collected" do
-    vending_machine = described_class.new(shelf: shelf_with_a_cola)
-
-    vending_machine.insert(tuppence)
-    vending_machine.select("Cola")
-    vending_machine.collect_product
-
-    expect(vending_machine.products_in_stock).not_to include("Cola")
+    it "removes the product from the machine" do
+      expect(vending_machine.products_in_stock).not_to include("Cola")
+    end
   end
 end
