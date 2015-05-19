@@ -36,6 +36,8 @@ class VendingMachine
 
   def select(name)
     @selection = @shelf.issue(name)
+  rescue Shelf::OutOfStockError => error
+    error.message
   end
 
   def selection
