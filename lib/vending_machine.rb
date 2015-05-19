@@ -43,11 +43,13 @@ class VendingMachine
   end
 
   def vend
-    return nil unless amount_inserted == @selection.price
-    product = @selection
-    reset_selection
-    take_payment
-    product
+    if amount_inserted == @selection.price
+      vend_selection
+    elsif amount_inserted < @selection.price
+      "Please insert more coins"
+    else
+      "Please select a product"
+    end
   end
 
   private
@@ -63,5 +65,12 @@ class VendingMachine
   def take_payment
     @coin_hopper.load(@coins_inserted.to_a)
     reset_coins_inserted
+  end
+
+  def vend_selection
+    product = @selection
+    reset_selection
+    take_payment
+    product
   end
 end

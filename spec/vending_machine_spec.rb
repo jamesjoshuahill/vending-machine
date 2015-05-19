@@ -110,7 +110,7 @@ RSpec.describe VendingMachine do
   it "vends nothing by default" do
     vending_machine = described_class.new
 
-    expect(vending_machine.vend).to be_nil
+    expect(vending_machine.vend).to eq("Please select a product")
   end
 
   it "vends nothing if not enough coins have been inserted" do
@@ -118,7 +118,7 @@ RSpec.describe VendingMachine do
 
     vending_machine.select("Cola")
 
-    expect(vending_machine.vend).to be_nil
+    expect(vending_machine.vend).to eq("Please insert more coins")
   end
 
   it "vends the selected product if the right amount has been inserted" do
