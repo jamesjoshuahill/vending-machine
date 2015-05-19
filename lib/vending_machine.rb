@@ -35,7 +35,7 @@ class VendingMachine
   end
 
   def select(name)
-    @selection = @shelf.find(name)
+    @selection = @shelf.issue(name)
   end
 
   def selection

@@ -17,7 +17,7 @@ class Shelf
     @products.map(&:name).uniq
   end
 
-  def find(name)
+  def issue(name)
     index = @products.index { |product| product.name == name }
 
     if index.nil?
