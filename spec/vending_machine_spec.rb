@@ -2,6 +2,7 @@ require_relative "../lib/vending_machine"
 
 RSpec.describe VendingMachine do
   let(:cola) { instance_double("Product", name: "Cola", price: 2) }
+  let(:tuppence) { instance_double("Coin", value: 2) }
 
   it "has no products by default" do
     expect(described_class.new.products_in_stock).to be_empty
@@ -18,17 +19,16 @@ RSpec.describe VendingMachine do
   end
 
   it "can have an initial load of coins" do
-    coins = [instance_double("Coin", value: 100)]
-    vending_machine = described_class.new(coin_hopper: CoinHopper.new(coins))
+    vending_machine = described_class.
+      new(coin_hopper: CoinHopper.new([tuppence]))
 
-    expect(vending_machine.amount_collected).to eq(100)
+    expect(vending_machine.amount_collected).to eq(2)
   end
 
   it "can reload coins" do
-    coins = [instance_double("Coin", value: 2)]
     vending_machine = described_class.new
 
-    vending_machine.reload_coins(coins)
+    vending_machine.reload_coins([tuppence])
 
     expect(vending_machine.amount_collected).to eq(2)
   end
@@ -37,7 +37,6 @@ RSpec.describe VendingMachine do
     penny = instance_double("Coin", value: 1)
     vending_machine = described_class.
       new(coin_hopper: CoinHopper.new([penny]))
-    tuppence = instance_double("Coin", value: 2)
 
     vending_machine.reload_coins([tuppence])
 
@@ -69,7 +68,6 @@ RSpec.describe VendingMachine do
   end
 
   it "accepts coins as payment" do
-    tuppence = instance_double("Coin", value: 2)
     vending_machine = described_class.new
 
     vending_machine.insert(tuppence)
@@ -78,7 +76,6 @@ RSpec.describe VendingMachine do
   end
 
   it "knows the amount inserted so far" do
-    tuppence = instance_double("Coin", value: 2)
     ten_pence = instance_double("Coin", value: 10)
     vending_machine = described_class.new
 
@@ -125,7 +122,6 @@ RSpec.describe VendingMachine do
 
   it "vends the selected product if the right amount has been inserted" do
     vending_machine = described_class.new(shelf: Shelf.new([cola]))
-    tuppence = instance_double("Coin", value: 2)
 
     vending_machine.insert(tuppence)
     vending_machine.select("Cola")
@@ -135,7 +131,6 @@ RSpec.describe VendingMachine do
 
   it "resets the selection when the product is collected" do
     vending_machine = described_class.new(shelf: Shelf.new([cola]))
-    tuppence = instance_double("Coin", value: 2)
 
     vending_machine.insert(tuppence)
     vending_machine.select("Cola")
@@ -146,7 +141,6 @@ RSpec.describe VendingMachine do
 
   it "resets the amount inserted when the product is collected" do
     vending_machine = described_class.new(shelf: Shelf.new([cola]))
-    tuppence = instance_double("Coin", value: 2)
 
     vending_machine.insert(tuppence)
     vending_machine.select("Cola")
@@ -157,7 +151,6 @@ RSpec.describe VendingMachine do
 
   it "takes the inserted coins as payment when the product is collected" do
     vending_machine = described_class.new(shelf: Shelf.new([cola]))
-    tuppence = instance_double("Coin", value: 2)
 
     vending_machine.insert(tuppence)
     vending_machine.select("Cola")
@@ -168,7 +161,6 @@ RSpec.describe VendingMachine do
 
   it "removes the product from the machine when it is collected" do
     vending_machine = described_class.new(shelf: Shelf.new([cola]))
-    tuppence = instance_double("Coin", value: 2)
 
     vending_machine.insert(tuppence)
     vending_machine.select("Cola")
