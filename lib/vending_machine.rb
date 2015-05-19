@@ -14,8 +14,8 @@ class VendingMachine
     @shelf.to_a
   end
 
-  def coins
-    @coin_hopper.to_a
+  def amount_collected
+    @coin_hopper.amount
   end
 
   def reload_coins(coins)

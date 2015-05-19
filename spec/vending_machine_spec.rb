@@ -6,7 +6,7 @@ RSpec.describe VendingMachine do
   end
 
   it "has no coins by default" do
-    expect(described_class.new.coins).to be_empty
+    expect(described_class.new.amount_collected).to eq(0)
   end
 
   it "can have an initial load of products" do
@@ -17,30 +17,30 @@ RSpec.describe VendingMachine do
   end
 
   it "can have an initial load of coins" do
-    coins = [instance_double("Coin")]
+    coins = [instance_double("Coin", value: 100)]
+    vending_machine = described_class.new(coin_hopper: CoinHopper.new(coins))
 
-    expect(described_class.new(coin_hopper: CoinHopper.new(coins)).coins).
-      to match_array(coins)
+    expect(vending_machine.amount_collected).to eq(100)
   end
 
   it "can reload coins" do
-    coins = [instance_double("Coin")]
+    coins = [instance_double("Coin", value: 2)]
     vending_machine = described_class.new
 
     vending_machine.reload_coins(coins)
 
-    expect(vending_machine.coins).to match_array(coins)
+    expect(vending_machine.amount_collected).to eq(2)
   end
 
   it "can top up coins" do
-    initial_coin = instance_double("Coin")
+    penny = instance_double("Coin", value: 1)
     vending_machine = described_class.
-      new(coin_hopper: CoinHopper.new([initial_coin]))
-    top_up_coin = instance_double("Coin")
+      new(coin_hopper: CoinHopper.new([penny]))
+    tuppence = instance_double("Coin", value: 2)
 
-    vending_machine.reload_coins([top_up_coin])
+    vending_machine.reload_coins([tuppence])
 
-    expect(vending_machine.coins).to contain_exactly(initial_coin, top_up_coin)
+    expect(vending_machine.amount_collected).to eq(3)
   end
 
   it "can reload products" do
@@ -170,7 +170,7 @@ RSpec.describe VendingMachine do
     vending_machine.select("Cola")
     vending_machine.collect_product
 
-    expect(vending_machine.coins).to include(tuppence)
+    expect(vending_machine.amount_collected).to eq(2)
   end
 
   it "removes the product from the machine when it is collected" do
