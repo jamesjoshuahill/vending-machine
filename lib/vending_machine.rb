@@ -27,12 +27,11 @@ class VendingMachine
   end
 
   def insert(coin)
-    @coins_inserted << coin
+    @coins_inserted.load([coin])
   end
 
   def amount_inserted
-    return 0 if @coins_inserted.empty?
-    @coins_inserted.map(&:value).reduce(:+)
+    @coins_inserted.amount
   end
 
   def select(name)
@@ -58,11 +57,11 @@ class VendingMachine
   end
 
   def reset_coins_inserted
-    @coins_inserted = []
+    @coins_inserted = CoinHopper.new
   end
 
   def take_payment
-    @coin_hopper.load(@coins_inserted)
+    @coin_hopper.load(@coins_inserted.to_a)
     reset_coins_inserted
   end
 end

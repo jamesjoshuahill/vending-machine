@@ -5,7 +5,7 @@ class CoinHopper
     @coins = coins
   end
 
-  def_delegator :@coins, :to_a
+  def_delegators :@coins, :to_a, :empty?
 
   def load(coins)
     @coins.concat(coins)
