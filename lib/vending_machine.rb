@@ -10,8 +10,8 @@ class VendingMachine
     reset_selection
   end
 
-  def products
-    @shelf.to_a
+  def products_in_stock
+    @shelf.list
   end
 
   def amount_collected

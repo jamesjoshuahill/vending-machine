@@ -13,6 +13,10 @@ class Shelf
     @products.concat(products)
   end
 
+  def list
+    @products.map(&:name).uniq
+  end
+
   def find(name)
     index = @products.index { |product| product.name == name }
 

@@ -2,7 +2,7 @@ require_relative "../lib/vending_machine"
 
 RSpec.describe VendingMachine do
   it "has no products by default" do
-    expect(described_class.new.products).to be_empty
+    expect(described_class.new.products_in_stock).to be_empty
   end
 
   it "has no coins by default" do
@@ -10,10 +10,10 @@ RSpec.describe VendingMachine do
   end
 
   it "can have an initial load of products" do
-    products = [instance_double("Product")]
+    products = [instance_double("Product", name: "Cola")]
+    vending_machine = described_class.new(shelf: Shelf.new(products))
 
-    expect(described_class.new(shelf: Shelf.new(products)).products).
-      to match_array(products)
+    expect(vending_machine.products_in_stock).to contain_exactly("Cola")
   end
 
   it "can have an initial load of coins" do
@@ -44,23 +44,23 @@ RSpec.describe VendingMachine do
   end
 
   it "can reload products" do
-    products = [instance_double("Product")]
+    products = [instance_double("Product", name: "Cola")]
     vending_machine = described_class.new
 
     vending_machine.reload_products(products)
 
-    expect(vending_machine.products).to match_array(products)
+    expect(vending_machine.products_in_stock).to contain_exactly("Cola")
   end
 
   it "can top up products" do
-    initial_product = instance_double("Product")
+    initial_product = instance_double("Product", name: "Cola")
     vending_machine = described_class.new(shelf: Shelf.new([initial_product]))
-    top_up_product = instance_double("Product")
+    top_up_product = instance_double("Product", name: "Soda")
 
     vending_machine.reload_products([top_up_product])
 
-    expect(vending_machine.products).
-      to contain_exactly(initial_product, top_up_product)
+    expect(vending_machine.products_in_stock).
+      to contain_exactly("Cola", "Soda")
   end
 
   it "has no coins inserted by default" do
@@ -182,6 +182,6 @@ RSpec.describe VendingMachine do
     vending_machine.select("Cola")
     vending_machine.collect_product
 
-    expect(vending_machine.products).not_to include(cola)
+    expect(vending_machine.products_in_stock).not_to include("Cola")
   end
 end
