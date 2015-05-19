@@ -1,7 +1,7 @@
 class CoinHopper
   extend Forwardable
 
-  def initialize(coins)
+  def initialize(coins = [])
     @coins = coins
   end
 

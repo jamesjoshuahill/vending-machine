@@ -3,9 +3,9 @@ require_relative "shelf"
 require_relative "coin_hopper"
 
 class VendingMachine
-  def initialize(shelf: Shelf.new, coins: [])
+  def initialize(shelf: Shelf.new, coin_hopper: CoinHopper.new)
     @shelf = shelf
-    @coins = CoinHopper.new(coins)
+    @coin_hopper = coin_hopper
     reset_coins_inserted
     reset_selection
   end
@@ -15,11 +15,11 @@ class VendingMachine
   end
 
   def coins
-    @coins.to_a
+    @coin_hopper.to_a
   end
 
   def reload_coins(coins)
-    @coins.load(coins)
+    @coin_hopper.load(coins)
   end
 
   def reload_products(products)
@@ -62,7 +62,7 @@ class VendingMachine
   end
 
   def take_payment
-    @coins.load(@coins_inserted)
+    @coin_hopper.load(@coins_inserted)
     reset_coins_inserted
   end
 end

@@ -19,7 +19,7 @@ RSpec.describe VendingMachine do
   it "can have an initial load of coins" do
     coins = [instance_double("Coin")]
 
-    expect(described_class.new(coins: coins).coins).
+    expect(described_class.new(coin_hopper: CoinHopper.new(coins)).coins).
       to match_array(coins)
   end
 
@@ -34,7 +34,8 @@ RSpec.describe VendingMachine do
 
   it "can top up coins" do
     initial_coin = instance_double("Coin")
-    vending_machine = described_class.new(coins: [initial_coin])
+    vending_machine = described_class.
+      new(coin_hopper: CoinHopper.new([initial_coin]))
     top_up_coin = instance_double("Coin")
 
     vending_machine.reload_coins([top_up_coin])
