@@ -4,6 +4,6 @@ class EmptySelection
   end
 
   def price
-    -1
+    Float::NAN
   end
 end

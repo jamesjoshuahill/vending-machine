@@ -43,8 +43,10 @@ class VendingMachine
   end
 
   def vend
-    if amount_inserted == @selection.price
-      vend_selection
+    if amount_inserted > @selection.price
+      [vend_change, vend_selection]
+    elsif amount_inserted == @selection.price
+      [vend_selection]
     elsif amount_inserted < @selection.price
       "Please insert more coins"
     else
@@ -72,5 +74,10 @@ class VendingMachine
     reset_selection
     take_payment
     product
+  end
+
+  def vend_change
+    amount = amount_inserted - @selection.price
+    @coin_hopper.issue(amount)
   end
 end

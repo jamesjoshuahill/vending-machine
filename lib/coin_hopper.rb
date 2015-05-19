@@ -14,4 +14,9 @@ class CoinHopper
   def amount
     @coins.map(&:value).reduce(0, :+)
   end
+
+  def issue(amount)
+    index = @coins.index { |coin| coin.value == amount }
+    @coins.delete_at(index)
+  end
 end

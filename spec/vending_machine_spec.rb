@@ -121,13 +121,29 @@ RSpec.describe VendingMachine do
     expect(vending_machine.vend).to eq("Please insert more coins")
   end
 
-  it "vends the selected product if the right amount has been inserted" do
-    vending_machine = described_class.new(shelf: shelf_with_a_cola)
+  context "when the exact amount has been inserted" do
+    it "vends the selected product" do
+      vending_machine = described_class.new(shelf: shelf_with_a_cola)
 
-    vending_machine.insert(tuppence)
-    vending_machine.select("Cola")
+      vending_machine.insert(tuppence)
+      vending_machine.select("Cola")
 
-    expect(vending_machine.vend).to be(cola)
+      expect(vending_machine.vend).to contain_exactly(cola)
+    end
+  end
+
+  context "when more than the amount has been inserted" do
+    it "vends the selected product and change" do
+      pound_coin = instance_double("Coin", value: 100)
+      soda = instance_double("Product", name: "Soda", price: 98)
+      vending_machine = described_class.
+        new(shelf: Shelf.new([soda]), coin_hopper: CoinHopper.new([tuppence]))
+
+      vending_machine.insert(pound_coin)
+      vending_machine.select("Soda")
+
+      expect(vending_machine.vend).to contain_exactly(soda, tuppence)
+    end
   end
 
   context "when the product is vended" do
